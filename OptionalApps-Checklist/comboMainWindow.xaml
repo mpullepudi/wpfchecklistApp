@@ -1,0 +1,19 @@
+﻿<Window x:Class="MultiSelectComboBoxDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Multi-Select ComboBox Demo" Height="350" Width="525">
+    <Grid>
+        <ComboBox x:Name="multiSelectComboBox"
+                  Width="200"
+                  Margin="10"
+                  VerticalAlignment="Center"
+                  ItemsSource="{Binding Items}"
+                  SelectionChanged="MultiSelectComboBox_SelectionChanged">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox Content="{Binding}" IsChecked="{Binding IsSelected}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+    </Grid>
+</Window>
