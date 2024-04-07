@@ -1,0 +1,34 @@
+using System;
+using Microsoft.Win32.TaskScheduler;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        string taskName = "MyScheduledTask";
+        string scriptPath = @"C:\path\to\your\script.ps1";
+
+        using (TaskService taskService = new TaskService())
+        {
+            // Create a new task
+            TaskDefinition taskDefinition = taskService.NewTask();
+            taskDefinition.RegistrationInfo.Description = "My Scheduled Task";
+            taskDefinition.Principal.RunLevel = TaskRunLevel.Highest;
+
+            // Set trigger to run once on task creation or modification
+            taskDefinition.Triggers.Add(new RegistrationTrigger
+            {
+                Enabled = true,
+                Subscription = @"<QueryList><Query Id='0' Path='Security'><Select Path='Security'>*[System[Provider[@Name='Microsoft-Windows-Security-Auditing'] and (EventID=4698 or EventID=4699)]]</Select></Query></QueryList>"
+            });
+
+            // Set action to run PowerShell script
+            taskDefinition.Actions.Add(new ExecAction("powershell.exe", $"-File \"{scriptPath}\"", null));
+
+            // Register the task
+            taskService.RootFolder.RegisterTaskDefinition(taskName, taskDefinition);
+            
+            Console.WriteLine("Scheduled task created successfully.");
+        }
+    }
+}
